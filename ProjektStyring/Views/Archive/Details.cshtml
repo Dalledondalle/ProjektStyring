@@ -1,0 +1,321 @@
+﻿@model ProjektStyring.Models.ProjectModel
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Detaljer</h1>
+<div class="card-body">
+    <!--Overskrift Div-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-8"><h4 class="mb-0">@Html.DisplayFor(modelItem => Model.Title)</h4></div>
+            <div class="col-4 text-right"><h5>@Html.DisplayFor(modelItem => Model.Priority) prioritet</h5></div>
+        </div>
+        <div class="row">
+            <small class="card-subtitle col-8 mb-2 mt-0 text-muted">Startet @Html.DisplayFor(modelItem => Model.StartDate) - Slutter @Html.DisplayFor(modelItem => Model.EndDate)</small>
+        </div>
+        @if (Model.IsComplete)
+        {
+            <div class="row">
+                <h6 class="col-4 mb-2 mt-0 text-left text-success">Færdigt</h6>
+
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <h6 class="col-4 mb-2 mt-0 text-left text-warning">Igangværende</h6>
+            </div>
+        }
+
+
+    </div>
+    <hr />
+
+    <!--Beskrivelse Div-->
+    <div class="container-lg">
+        <h6 class="mb-0 mt-3">Beskrivelse</h6>
+        @if (Model.Description != null)
+        {
+            @if (Model.Description.Length > 0)
+            {
+                <p class="mt-0">
+                    @Html.DisplayFor(modelItem => Model.Description)
+                </p>
+            }
+        }
+        else
+        {
+            <p class="mt-0">
+                Der er ikke blevet tilføjet en beskrivelse til dette projekt endnu
+            </p>
+        }
+    </div>
+    <hr />
+
+    <!--Dokumentation Div-->
+    <div class="container-fluid">
+        <h6 class="mb-0 btn-link" data-toggle="collapse" data-target="#Documentation">Dokumentation</h6>
+        <div id="Documentation" class="collapse">
+            @if (Model.DocumentationList != null)
+            {
+
+                @foreach (DescriptiveItem item in Model.DocumentationList)
+                {
+                    @if (!item.IsDeleted)
+                    {
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-8"><p class="mb-0">@item.Description</p></div>
+                                @Html.ActionLink("Slet", "DeleteDocumentation", new { id = Model.Id, desciptiveId = item.Id })
+                            </div>
+                            <div class="row">
+                                <small class="card-subtitle col-8 mb-2 mt-0 text-muted">Lavet d. @item.StartDate af @APITemp.Users.FirstOrDefault(x => x.Id == item.StudentId).FullName</small>
+                            </div>
+                        </div>
+                        @if (item.Blobs != null)
+                        {
+                            <p class="mt-0">@item.Description</p>
+                            @foreach (Blob blob in item.Blobs)
+                            {
+                                <img src="@blob.Url" />
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                <p class="mt-0">Der er ingen dokumentation på dette projekt endnu</p>
+            }
+            <a asp-action="AddDocumentation" asp-controller="Project" asp-route-id="@Model.Id" class="mx-2">Tilføj dokumentation</a>
+        </div>
+    </div>
+    <hr />
+
+    <!--Instruktør Div-->
+    <div class="container-fluid">
+        <h6 class="mb-0">Ansvarlig instruktør</h6>
+        @if (Model.InstructorId != null)
+        {
+            @if (Model.InstructorId.Length > 0)
+            {
+                <!--Skriver instruktør ID indtil videre-->
+                <p class="mt-0">
+                    Instruktør: @if (APITemp.Users.Any(x => x.Id == Model.InstructorId))
+                    {
+                        @APITemp.Users.First(x => x.Id == Model.InstructorId).FullName
+                    }
+                </p>
+            }
+        }
+        else
+        {
+            <p class="mt-0">
+                Der er ikke blevet tildelt nogen instruktør til projektet endnu
+            </p>
+        }
+    </div>
+    <hr />
+
+    <!--Kunde Div-->
+    @if (User.IsInRole(EasyHandler.Instructor) || User.IsInRole(EasyHandler.Admin))
+    {
+        <div class="container-fluid">
+            <h6 class="mb-0">Projektets kunde</h6>
+            @if (Model.CustomerId != null)
+            {
+                @if (Model.CustomerId.Length > 0)
+                {
+                    <!--Skriver kundens ID indtil videre-->
+                    <p class="mt-0">
+                        Kunden: @if (APITemp.Users.Any(x => x.Id == Model.CustomerId))
+                        {
+                            @APITemp.Users.First(x => x.Id == Model.CustomerId).FullName
+                        }
+                    </p>
+                }
+            }
+            else
+            {
+                <p class="mt-0">
+                    Dette projekt har ikke en kunde eller kunden er ikke blevet tilføjet endnu
+                </p>
+            }
+        </div>
+        <hr />
+    }
+
+    <!--Elever Div-->
+    <div class="container-fluid">
+        @if (Model.StudentIds == null)
+        {
+            <h6 class="mb-0">Projektets elev</h6>
+        }
+        else if (Model.StudentIds.Count < 2)
+        {
+            <h6 class="mb-0">Projektets elev</h6>
+        }
+        else
+        {
+            <h6 class="mb-0">Projektets elev</h6>
+        }
+        @if (Model.StudentIds != null)
+        {
+            @if (Model.StudentIds.Count > 0)
+            {
+                <!--Skriver elevernes ID indtil videre-->
+                <p class="mt-0">Dette er elevernes ID:</p>
+                <ul>
+                    @foreach (string student in Model.StudentIds)
+                    {
+                        <li>
+                            @if (APITemp.Users.Any(x => x.Id == student))
+                            {
+                                @APITemp.Users.FirstOrDefault(x => x.Id == student).FullName
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+        }
+        else
+        {
+            <p class="mt-0">
+                Ingen elever på projektet endnu
+            </p>
+        }
+    </div>
+    <hr />
+
+    <!--Materialer Div-->
+    <div class="container-fluid">
+        <h6 class="mb-0 btn-link" data-toggle="collapse" data-target="#Materials">Materialer</h6>
+        <div class="collapse" id="Materials">
+            @if (Model.Materials == null)
+            {
+                <p class="mt-0">Der er ingen materialer til projektet</p>
+            }
+            else if (Model.Materials.Count < 1)
+            {
+                <p class="mt-0">Der er ingen materialer til projektet</p>
+            }
+            else
+            {
+                if (Model.Materials != null)
+                {
+                    @foreach (MaterialModel material in Model.Materials)
+                    {
+                        @if (!material.IsDeleted)
+                        {
+                            <div class="row">
+                                <div class="col-8"><p class="mb-0">@material.Name</p></div>
+                                @if (User.Claims.FirstOrDefault(x => x.Type == "role")?.Value == EasyHandler.Instructor || User.Claims.FirstOrDefault(x => x.Type == "role")?.Value == EasyHandler.Admin)
+                                {
+                                    @Html.ActionLink("Slet", "DeleteMaterial", new { id = Model.Id, materialName = material.Name })
+                                }
+                            </div>
+                            <div class="row">
+                                <small class="card-subtitle col-8 mb-2 mt-0 text-muted">
+                                    Tilføjet d. @material.AddedDate af @if (APITemp.Users.Any(x => x.Id == material.StudentId))
+                                    {
+                                        @APITemp.Users.FirstOrDefault(x => x.Id == material.StudentId).FullName
+                                    }
+                                </small>
+                            </div>
+                            @if (material.Amount != null)
+                            {
+                                @if (material.Amount.Length > 0)
+                                {
+                                    <p>Antal: @material.Amount <br /></p>
+                                }
+                            }
+                            @if (material.Comment != null)
+                            {
+                                @if (material.Comment.Length > 0)
+                                {
+                                    <p>Kommentar: @material.Comment<br /></p>
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            <a asp-action="AddMaterial" asp-controller="Project" asp-route-id="@Model.Id" class="mx-2">Tilføj materiale</a>
+        </div>
+    </div>
+    <hr />
+
+    <!--History Div-->
+    @if (User.IsInRole(EasyHandler.Instructor) || User.IsInRole(EasyHandler.Admin))
+    {
+        <div class="container-fluid">
+            <h6 class="mb-0 btn-link" data-toggle="collapse" data-target="#History">Elevers tidsperioder</h6>
+            <div class="collapse" id="History">
+                @if (Model.History == null)
+                {
+                    <p class="mt-0">Der er ingen elever, som har stemplet ind endnu på projektet</p>
+                }
+                else if (Model.History.Count < 1)
+                {
+                    <p class="mt-0">Der er ingen elever, som har stemplet ind endnu på projektet</p>
+                }
+                else
+                {
+                    <div class="container-fluid">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <p>Navn</p>
+                                    </th>
+                                    <th>
+                                        <p>Logind tid</p>
+                                    </th>
+                                    <th>
+                                        <p>Logud tid</p>
+                                    </th>
+                                </tr>
+                            </thead>
+                            @foreach (HistoryEntry entry in Model.History)
+                            {
+                                @if (APITemp.Users.Any(x => x.Id == entry.StudentId))
+                                {
+                                    <tr>
+                                        <td>@APITemp.Users.FirstOrDefault(x => x.Id == entry.StudentId).FullName</td>
+                                        <td>@entry.LoginTime.ToString("dddd, dd MMMM yyyy HH:mm")</td>
+                                        @if (entry.LogoutTime > new DateTime(1980, 1, 1))
+                                        {
+                                            <td>@entry.LogoutTime.ToString("dddd, dd MMMM yyyy HH:mm")</td>
+                                        }
+                                        else
+                                        {
+                                            <td>Eleven er stadig på projektet</td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+        <hr />
+    }
+
+</div>
+
+@* @Html.DisplayNameFor(model => model.CaseId) *@
+@* @Html.DisplayFor(modelItem => Model.CaseId) *@
+
+
+<div>
+    @Html.ActionLink("Tilbage", "Index", "Archive")
+    @Html.ActionLink("Rediger", "Edit", new { id = Model.Id }, null)
+    @*<a asp-action="Edit" asp-controller="Project" asp-route-id="@Model" class="mx-2">Redigere</a>*@
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,79 @@
+﻿@model IEnumerable<ProjektStyring.Models.TaskModel>
+
+
+@{
+    ViewData["Title"] = "Projekter";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Opgaver</h1>
+
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CustomerId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CurrentStatus)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="pointer" onclick="location.href='@Url.Action("Details", "Task", new { id = item.Id })'">
+                    <td>
+                        <p>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </p>
+                    </td>
+                    <td class="text-truncate text-wrap" style="width: 25vw; max-height: 3vw">
+                        <p>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </p>
+                    </td>
+                    <td>
+                        @if (APITemp.Users.Any(x => x.Id == item.CustomerId))
+                        {
+                            <p>
+                                @APITemp.Users.First(x => x.Id == item.CustomerId).FullName
+                            </p>
+                        }
+                    </td>
+                    <td>
+                        @if (item.CurrentStatus == CurrentStatus.Accepteret)
+                        {
+                            <p class="text-success">@Html.DisplayFor(modelItem => item.CurrentStatus)</p> @*Grøn*@
+                        }
+                        else if (item.CurrentStatus == CurrentStatus.Færdigt)
+                        {
+                            <p class="text-success">@Html.DisplayFor(modelItem => item.CurrentStatus)</p> @*Grøn*@
+                        }
+                        else if (item.CurrentStatus == CurrentStatus.Afvist)
+                        {
+                            <p class="text-danger">@Html.DisplayFor(modelItem => item.CurrentStatus)</p> @*Rød*@
+                        }
+                        else
+                        {
+                            <p class="text-warning">@Html.DisplayFor(modelItem => item.CurrentStatus)</p> @*Gul*@
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<p>
+    <a class="btn btn-primary float-right rounded-circle" role="button" asp-action="Create">+</a>
+</p>

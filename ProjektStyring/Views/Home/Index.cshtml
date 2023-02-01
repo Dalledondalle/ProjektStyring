@@ -1,0 +1,23 @@
+﻿@model ProjektStyring.Models.ProjectModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="container-fluid text-center">
+        <h1 class="mx-auto">Velkommen til SKP Projektstyring</h1>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <h1>@User.Claims.First(x => x.Type == "name").Value</h1>
+            <hr />
+            @if (Model != null)
+            {
+                <h3>Dit nuværende projekt</h3>
+                <h5>Title: </h5><p>@Model.Title</p>
+                <h5>Beskrivelse: </h5><p>@Model.Description</p>
+                <h5>Prioritet: </h5><p>@Model.Priority</p>
+                @Html.ActionLink("Gå til projektet", "Details", "Project", new { id = Model.Id }, null)
+            }
+        }
+    </div>

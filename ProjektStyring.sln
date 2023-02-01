@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30320.27
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjektStyring", "ProjektStyring\ProjektStyring.csproj", "{E7D37118-129F-4F46-9024-B2FF8D7A0CC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionRemoveStudentsFromProjects", "FunctionRemoveStudentsFromProjects\FunctionRemoveStudentsFromProjects.csproj", "{E2F8470B-CDB8-46BE-86B7-04486CCD7560}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7D37118-129F-4F46-9024-B2FF8D7A0CC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7D37118-129F-4F46-9024-B2FF8D7A0CC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7D37118-129F-4F46-9024-B2FF8D7A0CC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7D37118-129F-4F46-9024-B2FF8D7A0CC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2F8470B-CDB8-46BE-86B7-04486CCD7560}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2F8470B-CDB8-46BE-86B7-04486CCD7560}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2F8470B-CDB8-46BE-86B7-04486CCD7560}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2F8470B-CDB8-46BE-86B7-04486CCD7560}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F1F3039C-B9A3-42E6-B7A6-73FE7793E080}
+	EndGlobalSection
+EndGlobal

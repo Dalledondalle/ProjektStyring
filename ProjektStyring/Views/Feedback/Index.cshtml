@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Feedback";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Html.Raw(TempData["msg"])
+<div class="container-fluid text-center">
+    <h1 class="mx-auto">Giv feedback eller reportere en bug</h1>
+    <form id="putRoleOn" asp-action="PostFeedback" method="post">
+        <input type="text" name="content" />
+        <button type="submit">Send feedback</button>
+    </form>
+</div>
+

@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid text-center">
+    <h1 class="mx-auto">Gør til kunde</h1>
+    @if (User.Identity.IsAuthenticated && User.IsInRole(EasyHandler.Instructor) || User.IsInRole(EasyHandler.Admin))
+    {
+        <form id="putRoleOn" asp-action="GiveStockManagerRole" method="post">
+            <select id="js-noneCustomers" class="dropdown" name="userId" asp-items=@(new SelectList(APITemp.NoneCustomers, "Id", "NameAndEmail"))></select>
+            <button type="submit">Gør til kunde</button>
+        </form>
+    }
+</div>
+
+<div class="container-fluid text-center">
+    <h1 class="mx-auto">Fjern som kunde</h1>
+    @if (User.Identity.IsAuthenticated && User.IsInRole(EasyHandler.Instructor) || User.IsInRole(EasyHandler.Admin))
+    {
+        <form id="putRoleOn" asp-action="RemoveStockManagerRole" method="post">
+            <select id="js-customers" class="dropdown" name="userId" asp-items=@(new SelectList(APITemp.Customers, "Id", "NameAndEmail"))></select>
+            <button type="submit">Fjern som kunde</button>
+        </form>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+    <script>
+        const noneCustomers = new Choices("#js-noneCustomers", {
+            removeItems: true,
+            removeItemButton: true
+        });
+
+        const customers = new Choices("#js-customers", {
+            removeItems: true,
+            removeItemButton: true
+        });
+    </script>
+}

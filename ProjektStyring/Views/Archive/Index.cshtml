@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ProjektStyring.Models.ProjectModel>
+
+
+@{
+    ViewData["Title"] = "Projekter";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Arkiv</h1>
+
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CaseId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Priority)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StudentIds)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="pointer" onclick="location.href='@Url.Action("Details", "Project", new { id = item.Id })'">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CaseId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td class="text-truncate text-wrap" style="width: 25vw; max-height: 3vw">
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Priority)
+                    </td>
+                    <td @*class="d-flex flex-column"*@>
+                        @if (item.StudentIds != null)
+                        {
+                            @foreach (var studentId in item.StudentIds)
+                            {
+                                @if (APITemp.Users.Any(x => x.Id == studentId))
+                                {
+                                    <span style="display:flex">
+                                        @APITemp.Users.FirstOrDefault(x => x.Id == studentId).FullName
+                                    </span>
+                                }
+                            }
+                        }
+                    </td>
+                    <td>
+                        @if (User.Claims.FirstOrDefault(x => x.Type == "role")?.Value == EasyHandler.Admin)
+                        {
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+        @if (ViewBag.ShowingDeleted == "1")
+        {
+            @Html.ActionLink("Skjul slettede", "HideDeleted")
+        }
+        else
+        {
+            @Html.ActionLink("Vis slettede", "ShowDeleted")
+        }
+    </table>
+</div>

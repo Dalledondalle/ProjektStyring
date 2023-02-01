@@ -1,0 +1,142 @@
+﻿@model ProjektStyring.Models.TaskModel
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Detaljer</h1>
+<div class="card-body">
+    <!--Overskrift Div-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-8">
+                <h4 class="mb-0">@Html.DisplayFor(modelItem => Model.Title)</h4>
+            </div>
+            @if (Model.CurrentStatus == CurrentStatus.Accepteret)
+            {
+                <div class="row">
+                    <h5 class="col-4 mb-2 mt-0 text-left text-success">Status: @Html.DisplayFor(modelItem => Model.CurrentStatus)</h5> @*Grøn*@
+                </div>
+            }
+            else if (Model.CurrentStatus == CurrentStatus.Færdigt)
+            {
+                <div class="row">
+                    <h5 class="col-4 mb-2 mt-0 text-left text-success">Status: @Html.DisplayFor(modelItem => Model.CurrentStatus)</h5> @*Grøn*@
+                </div>
+            }
+            else if (Model.CurrentStatus == CurrentStatus.Afvist)
+            {
+                <div class="row">
+                    <h5 class="col-4 mb-2 mt-0 text-left text-danger">Status: @Html.DisplayFor(modelItem => Model.CurrentStatus)</h5> @*Rød*@
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    <h5 class="col-4 mb-2 mt-0 text-left text-warning">Status: @Html.DisplayFor(modelItem => Model.CurrentStatus)</h5> @*Gul*@
+                </div>
+            }
+        </div>
+    </div>
+    <hr />
+
+    <!--Beskrivelse Div-->
+    <div class="container-lg">
+        <h6 class="mb-0 mt-3">Beskrivelse</h6>
+        @if (Model.Description != null)
+        {
+            @if (Model.Description.Length > 0)
+            {
+                <p class="mt-0">
+                    @Html.DisplayFor(modelItem => Model.Description)
+                </p>
+            }
+        }
+        else
+        {
+            <p class="mt-0">
+                Der er ikke blevet tilføjet en beskrivelse til dette projekt endnu
+            </p>
+        }
+    </div>
+    <hr />
+
+    <!--Billeder-->
+    <div class="container-fluid">
+        <h6 class="mb-0 btn-link" data-toggle="collapse" data-target="#Documentation">Billeder</h6>
+        <div id="Documentation" class="collapse">
+            @if (Model.Blobs != null)
+            {
+
+                @foreach (Blob item in Model.Blobs)
+                {
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-8"><p class="mb-0">@item.Name</p></div>
+                        </div>
+                    </div>
+                    <img src="@item.Url" />
+                }
+            }
+            else
+            {
+                <p class="mt-0">Der er ingen dokumentation på dette projekt endnu</p>
+            }
+            @*<a asp-action="AddDocumentation" asp-controller="Project" asp-route-id="@Model.Id" class="mx-2">Tilføj dokumentation</a>*@
+        </div>
+    </div>
+    <hr />
+
+    <!--Kunde Div-->
+    <div class="container-fluid">
+        <h6 class="mb-0">Projektets kunde</h6>
+        @if (Model.CustomerId != null)
+        {
+            @if (Model.CustomerId.Length > 0)
+            {
+                <!--Skriver kundens ID indtil videre-->
+                <p class="mt-0">
+                    Kunden: @if (APITemp.Users.Any(x => x.Id == Model.CustomerId))
+                    {
+                        @APITemp.Users.First(x => x.Id == Model.CustomerId).FullName
+                    }
+                </p>
+            }
+        }
+        else
+        {
+            <p class="mt-0">
+                Dette projekt har ikke en kunde eller kunden er ikke blevet tilføjet endnu
+            </p>
+        }
+    </div>
+    <hr />
+</div>
+
+@* @Html.DisplayNameFor(model => model.CaseId) *@
+@* @Html.DisplayFor(modelItem => Model.CaseId) *@
+
+
+<div>
+    <a asp-action="Index" class="mx-2">Tilbage</a>
+    @if (Model.CustomerId == User.Claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value &&
+    Model.IsDeleted == false &&
+    Model.CurrentStatus == CurrentStatus.Bearbejdes)
+    {
+        <a>@Html.ActionLink("Redigere", "Edit", new { id = Model.Id }, null)</a>
+    }
+    @if (User.IsInRole(EasyHandler.Instructor) || User.IsInRole(EasyHandler.Admin) &&
+        Model.CurrentStatus != CurrentStatus.Afvist)
+    {
+        @Html.ActionLink("Lav til projekt", "ConvertFromTask", "Project", Model, null)
+    }
+    @if (User.IsInRole(EasyHandler.Instructor))
+    {
+        <a>@Html.ActionLink("Accepter", "AcceptTask", new { taskId = Model.Id })</a>
+        <a>@Html.ActionLink("Afvis", "DeclineTask", new { taskId = Model.Id })</a>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
